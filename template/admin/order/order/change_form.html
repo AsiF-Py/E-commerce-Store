@@ -1,0 +1,25 @@
+{% extends "admin/change_form.html" %}
+<style>
+    #id_price{
+        border: 1px solid black;
+        background-color: aqua;
+    }
+</style>
+
+{% block inline_field_sets %}
+{% for inline_admin_formset in inline_admin_formsets %}
+    {% include inline_admin_formset.opts.template %}
+    <h1 class="text-xl font-semibold">{{ obj.user.first_name }} {{ obj.user.last_name }}</h1>
+    <p><strong>Company Name:</strong> {{ obj.address.company_name }}</p>
+    <p><strong>Street Address:</strong> {{ obj.address.street_address }}</p>
+    <p><strong>Apartment:</strong> {{ obj.address.apartment }}</p>
+    <p><strong>Town/City:</strong> {{ obj.address.town_city }}</p>
+    <p><strong>Phone Number:</strong> {{ obj.address.phone_number }}</p>
+    <p><strong>Email Address:</strong> {{ obj.address.email_address }}</p>
+
+  
+
+{% endfor %}
+{% endblock %}
+
+

@@ -1,0 +1,119 @@
+{% extends "base.html"%}
+{% block content %}
+
+
+<section class="flex justify-between pl-14 pt-5">
+	<div>
+		<h1 class="text-xl">Account</h1>
+		<div>
+			<div class="breadcrumbs text-sm pt-3">
+				<ul>
+					<li>
+						<a>Home</a>
+					</li>
+					<li>
+						<a>Account</a>
+					</li>
+					
+				</ul>
+			</div>
+		</div>
+	</div>
+	<h1 class="pr-6">Hi Asif</h1>
+</section>
+<div class="sticky flex h-screen pl-10 flex-row gap-4 overflow-y-auto rounded-lg sm:overflow-x-hidden ">
+
+	<aside class="sidebar-sticky sidebar justify-start bg-white">
+
+		<section class="sidebar-content min-h-[20rem]">
+			<nav class="menu rounded-md">
+				<section class="menu-section px-4">
+					<p class="font-bold">Manage My Account</p>
+					<ul class="menu-items">
+						<li class="menu-item">
+
+							<a href="/profile/"><span>My Profile</span></a>
+						</li>
+
+				
+						<li class="menu-item">
+
+							<a href="/update-address/"><span>Address Book</span></a>
+						</li>
+						<li class="menu-item">
+
+							<span>My Payment Options</span>
+						</li>
+
+					</ul>
+				</section>
+			</nav>
+		</section>
+		
+	</aside>
+
+	<div class="flex w-2/3 mx-auto flex-row flex-wrap gap-4 p-6">
+		<div class="my-4 grid w-full grid-cols-1 gap-4">
+			<div class="h-full w-full px-12 py-6 border-2 border border-border bg-gray-1">
+				<h1>Edit Your Profile</h1>
+				<form method="post">
+					{% csrf_token %}
+				<div>
+					<div class="grid grid-cols-2 gap-5">
+						<div>
+							<h1>{{form.first_name.label}}</h1>
+							{{form.first_name}}
+						</div>
+						<div>
+							<h1>{{form.last_name.label}}</h1>
+							{{form.last_name}}
+						</div>
+						<div>
+							<h1>{{form.email.label}}</h1>
+							{{form.email}}
+						</div>
+						<div>
+							<h1>{{form.address.label}}</h1>
+							{{form.address}}
+						</div>
+					</div>
+
+
+					<div class="space-y-5 pt-4">
+						<div>
+							<h1>{{form.old_password.label}}</h1>
+							{{form.old_password}}
+						</div>
+	
+						<div>
+							<h1>{{form.new_password1.label}}</h1>
+							{{form.new_password1}}
+						</div>
+						<div>
+							<h1>{{form.new_password2.label}}</h1>
+							{{form.new_password2}}
+						</div>
+					</div>
+				
+
+					<div class="w-28 pt-5 flex text-center">
+						<input type="submit" class="btn btn-primary bg-black btn-block" value="Save">
+					</div>
+					{% if form.errors %}
+					<div class="alert alert-error">
+					  <ul>
+						{% for field, errors in form.errors.items %}
+						<li class="list-disc list-inside">{{field}} {{ errors.0 }}</li>
+						{% endfor %}
+					  </ul>
+					</div>
+					{% endif %}
+				</div>
+			</form>
+			</div>
+			
+		</div>
+	</div>
+</div>
+
+{% endblock %}

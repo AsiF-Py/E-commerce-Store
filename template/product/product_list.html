@@ -1,0 +1,496 @@
+{% extends "base.html"%}
+{% block content %}
+{% load cart_tags %}
+
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.css" rel="stylesheet" />
+
+</head>
+
+
+<section class="p-12 grid grid-cols-4 gap-5">
+
+    {% for product in product_list %}
+    <div>
+        <div class="border border-1">
+            {% if request.user.is_authenticated %}
+            {% if product|in_wishlist:request.user %}
+            <!-- <p>This product is already in your cart.</p> -->
+            <a href="/wishlist/">
+                <h1 class="text-right pr-5 pt-3">Already Added In WISHLIST</h1>
+            </a>
+
+            {% else %}
+            <a href="/add-wishlist/{{product.id}}/">
+                <h1 class="text-right pr-5 pt-3">ADD TO WISHLIST</h1>
+            </a>
+            {% endif %}
+
+            {% else %}
+            <a href="/register/">
+                <h1 class="text-right pr-5 pt-3">ADD TO WISHLIST</h1>
+            </a>
+            {% endif %}
+
+            <div class="flex justify-center">
+                <img src="{{product.image.url}}" class="w-60 h-60 ">
+            </div>
+            <div class="flex justify-center items-center space-x-3 pt-3">
+
+
+
+                <div>
+                    <form class="max-w-xs mx-auto">
+                        <div class="relative flex items-center">
+                            <button type="button" onclick="decrement('{{ product.id }}')"
+                                class="flex-shrink-0 bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 inline-flex items-center justify-center border border-gray-300 rounded-md h-5 w-5 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none">
+                                <svg class="w-2.5 h-2.5 text-gray-900 dark:text-white" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="2" d="M1 1h16" />
+                                </svg>
+                            </button>
+                            <input type="text" id="valueInput{{ product.id }}"
+                                class="flex-shrink-0 text-gray-900 dark:text-white border-0 bg-transparent text-sm font-normal focus:outline-none focus:ring-0 max-w-[2.5rem] text-center"
+                                placeholder="" value="1" min="1" required>
+                            <button type="button" onclick="increment('{{ product.id }}')"
+                                class="flex-shrink-0 bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 inline-flex items-center justify-center border border-gray-300 rounded-md h-5 w-5 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none">
+                                <svg class="w-2.5 h-2.5 text-gray-900 dark:text-white" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="2" d="M9 1v16M1 9h16" />
+                                </svg>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+
+
+
+                <div>
+                    {% if request.user.is_authenticated %}
+                    {% if product|in_cart:request.user %}
+                    <!-- <p>This product is already in your cart.</p> -->
+                    <button type="button" data-modal-target="product-{{product.id}}"
+                        data-modal-toggle="product-{{product.id}}"
+                        class="text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none font-medium rounded-lg px-3 py-2 text-xs me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">Go
+                        To Cart</button>
+                    {% else %}
+                    <button onclick="addToCart('{{ product.id }}')" type="button"
+                        class="text-white bg-gray-900  hover:bg-black focus:outline-none font-medium rounded-lg px-3 py-2 text-xs me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">Add
+                        To Cart</button>
+                    {% endif %}
+                    {% else %}
+                    <a href="/register/"> <button type="button"
+                            class="text-white bg-gray-900  hover:bg-black focus:outline-none font-medium rounded-lg px-3 py-2 text-xs me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">Add
+                            To Cart</button> </a>
+                    {% endif %}
+
+                </div>
+                <button data-modal-target="{{product.id}}" data-modal-toggle="{{product.id}}">
+                    <i class="fa-solid fa-eye" style="color: #000000;"></i>
+                </button>
+            </div>
+        </div>
+        <h1 class="text-[#090909] pt-2">{{product.name | truncatechars:38}}</h1>
+        <h1 class="font-bold">₦{{product.price}}</h1>
+
+        <div>
+        </div>
+
+
+    </div>
+
+
+
+
+
+    <!-- Product Details modal -->
+    <div id="{{product.id}}" tabindex="-1" aria-hidden="true"
+        class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+        <div class="relative p-4 w-full max-w-2xl max-h-full">
+            <!-- Modal content -->
+            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                <!-- Modal header -->
+                <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+
+                    <button type="button"
+                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                        data-modal-hide="{{product.id}}">
+                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                        </svg>
+                        <span class="sr-only">Close modal</span>
+                    </button>
+                </div>
+                <!-- Modal body -->
+
+                <section class="flex">
+                    <div>
+                        <div class="flex mx-auto mt-8">
+                            <div class="flex flex-col space-y-2 pl-2">
+                                {% for image in product.images_set.all %}
+                                <button id="tab{{ forloop.counter }}" class="tab-btn border-2">
+                                    <img src="{{ image.images.url }}" class="w-10 h-10">
+                                </button>
+                                {% endfor %}
+                            </div>
+
+
+                            
+                            <div>
+                                {% for image in product.images_set.all %}
+                                <div id="content{{ forloop.counter }}"
+                                    class="tab-content {% if forloop.first %}active{% endif %}">
+                                    <img src="{{ image.images.url }}" class="w-60 h-60">
+                                </div>
+                                {% endfor %}
+
+                            </div>
+                            
+
+                        </div>
+
+
+
+
+                    </div>
+                    <div class="p-4 md:p-5 space-y-4">
+                        <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                            {{product.name}}
+                        </h3>
+                        <p class="text-base  leading-relaxed text-gray-500 dark:text-gray-400">
+                            Price : <span class="font-bold text-black">₦{{product.price}}</span>
+
+
+                        </p>
+
+                        <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+
+
+                            In-Stock: <span class="font-bold text-black">100</span>
+                        </p>
+
+
+                        <div>
+                            <form class="max-w-xs mx-auto">
+                                <div class="relative flex items-center">
+                                    <button type="button" onclick="decrementProductDetails('{{ product.id }}')"
+                                        class="flex-shrink-0 bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 inline-flex items-center justify-center border border-gray-300 rounded-md h-5 w-5 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none">
+                                        <svg class="w-2.5 h-2.5 text-gray-900 dark:text-white" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                                stroke-width="2" d="M1 1h16" />
+                                        </svg>
+                                    </button>
+                                    <input type="text" id="valueInputProductDetails{{ product.id }}"
+                                        class="flex-shrink-0 text-gray-900 dark:text-white border-0 bg-transparent text-sm font-normal focus:outline-none focus:ring-0 max-w-[2.5rem] text-center"
+                                        placeholder="" value="1" required>
+                                    <button type="button" onclick="incrementProductDetails('{{ product.id }}')"
+                                        class="flex-shrink-0 bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 inline-flex items-center justify-center border border-gray-300 rounded-md h-5 w-5 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none">
+                                        <svg class="w-2.5 h-2.5 text-gray-900 dark:text-white" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                                stroke-width="2" d="M9 1v16M1 9h16" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        <aside class="flex">
+                            <div>
+                                {% if request.user.is_authenticated %}
+                                {% if product|in_wishlist:request.user %}
+                                <!-- <p>This product is already in your cart.</p> -->
+                                <a href="/wishlist/">
+
+                                    <button type="button"
+                                        class="text-black bg-white border font-medium rounded-lg px-3 py-2 text-xs me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">
+                                        Already Added In WISHLIST</button>
+                                </a>
+                                {% else %}
+                                <a href="/add-wishlist/{{product.id}}/"> <button type="button"
+                                        class="text-black bg-white border font-medium rounded-lg px-3 py-2 text-xs me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">
+                                        ADD TO WISHLIST</button></a>
+                                {%endif%}
+                                {% else %}
+                                <a href="/register/"> <button type="button"
+                                        class="text-black bg-white border font-medium rounded-lg px-3 py-2 text-xs me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">
+                                        ADD TO WISHLIST</button></a>
+                                {%endif%}
+                            </div>
+                            <div>
+                                {% if request.user.is_authenticated %}
+                                {% if product|in_cart:request.user %}
+                                <!-- <p>This product is already in your cart.</p> -->
+                                <button type="button" data-modal-target="product-{{product.id}}"
+                                    data-modal-toggle="product-{{product.id}}"
+                                    class="text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none font-medium rounded-lg px-3 py-2 text-xs me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">Go
+                                    To Cart</button>
+                                {% else %}
+                                <button onclick="addToCartProductDetails('{{ product.id }}')" type="button"
+                                    class="text-white bg-gray-900 hover:bg-black focus:outline-none font-medium rounded-lg px-3 py-2 text-xs me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">Add
+                                    To Cart</button>
+                                {% endif %}
+                                {% else %}
+                                <a href="/register/">
+                                    <button type="button"
+                                        class="text-white bg-gray-900 hover:bg-black focus:outline-none font-medium rounded-lg px-3 py-2 text-xs me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">Add
+                                        To Cart</button>
+                                </a>
+                                {% endif %}
+                            </div>
+                        </aside>
+                    </div>
+                </section>
+
+
+
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+    <!-- Cart modal -->
+    <div id="product-{{product.id}}" tabindex="-1" aria-hidden="true"
+        class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+        <div class="relative p-4 w-full max-w-md max-h-full">
+            <!-- Modal content -->
+            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                <!-- Modal header -->
+                <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                    <h3 class="text-base font-semibold text-gray-900 dark:text-white">
+                        You have {{my_cart.count}} items in your shopping bag
+                    </h3>
+                    <button type="button"
+                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                        data-modal-toggle="product-{{product.id}}">
+                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                        </svg>
+                        <span class="sr-only">Close modal</span>
+                    </button>
+                </div>
+                <!-- Modal body -->
+
+
+                {% for cart in my_cart %}
+
+
+                <div class="flex gap-7 py-2 px-5 mx-auto">
+                    <div class="flex justify-center">
+                        <img src="{{cart.products.image.url}}" class="w-20 h-20 ">
+                    </div>
+                    <div class="flex justify-center flex-col">
+                        <div>
+                            <h1>{{cart.products.name | truncatechars:30}}</h1>
+                            <p>{{cart.products.price}}</p>
+                            <div class="flex justify-between items-center">
+                                <form class="max-w-xs mx-auto">
+                                    <div class="relative flex items-center">
+                                        <button type="button" onclick="decrementCart('{{ product.id }}')"
+                                            class="flex-shrink-0 bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 inline-flex items-center justify-center border border-gray-300 rounded-md h-5 w-5 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none">
+                                            <svg class="w-2.5 h-2.5 text-gray-900 dark:text-white" aria-hidden="true"
+                                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
+                                                <path stroke="currentColor" stroke-linecap="round"
+                                                    stroke-linejoin="round" stroke-width="2" d="M1 1h16" />
+                                            </svg>
+                                        </button>
+                                        <input type="text" id="valueInputCart{{ product.id }}"
+                                            class="flex-shrink-0 text-gray-900 dark:text-white border-0 bg-transparent text-sm font-normal focus:outline-none focus:ring-0 max-w-[2.5rem] text-center"
+                                            placeholder="" value="{{cart.quantity}}" required>
+                                        <button type="button" onclick="incrementCart('{{ product.id }}')"
+                                            class="flex-shrink-0 bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 inline-flex items-center justify-center border border-gray-300 rounded-md h-5 w-5 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none">
+                                            <svg class="w-2.5 h-2.5 text-gray-900 dark:text-white" aria-hidden="true"
+                                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                                                <path stroke="currentColor" stroke-linecap="round"
+                                                    stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </form>
+                                <a href="{% url 'cart_delete' cart.id %}">Remove</a>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+                <hr>
+                {%endfor%}
+
+                <hr>
+                <h1 class="text-center">You’re ₦10,000 away from ₦20,000 cashback</h1>
+
+                <section class="flex justify-between p-4 font-bold">
+                    <h1>Subtotal</h1>
+                    <h1>{{all_total_sub_price}}</h1>
+                </section>
+
+                <div class="text-center">
+                    <a href="/create-order/"><button type="button"
+                            class="text-white bg-gray-900  hover:bg-gray-900  focus:outline-none font-medium rounded-lg px-20 py-3 text-xs me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">
+                            Checkout</button></a>
+                </div>
+                <div class="text-center py-5">
+                    <a href="/my-cart/">Expand your Shopping bag</a>
+
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+
+
+    </div>
+
+
+    {% endfor %}
+</section>
+
+
+<script>
+    // Get the input field and initial value
+    var inputField = document.getElementById('valueInput');
+    var currentValue = 0;
+
+    function increment(productId) {
+        var inputField = document.getElementById('valueInput' + productId);
+        var currentValue = parseInt(inputField.value, 10) || 0;
+        currentValue++;
+        inputField.value = currentValue;
+    }
+
+    // Function to decrement the value
+    function decrement(productId) {
+        var inputField = document.getElementById('valueInput' + productId);
+        var currentValue = parseInt(inputField.value, 10) || 0;
+        if (currentValue > 0) {
+            currentValue--;
+            inputField.value = currentValue;
+        }
+    }
+
+    // Function to update the input field with the current value
+    function updateInputField() {
+        inputField.value = currentValue;
+    }
+
+
+
+
+    var inputField = document.getElementById('valueInputProductDetails');
+    var currentValue = 0;
+
+    function incrementProductDetails(productId) {
+        var inputField = document.getElementById('valueInputProductDetails' + productId);
+        var currentValue = parseInt(inputField.value, 10) || 0;
+        currentValue++;
+        inputField.value = currentValue;
+    }
+
+    // Function to decrement the value
+    function decrementProductDetails(productId) {
+        var inputField = document.getElementById('valueInputProductDetails' + productId);
+        var currentValue = parseInt(inputField.value, 10) || 0;
+        if (currentValue > 0) {
+            currentValue--;
+            inputField.value = currentValue;
+        }
+    }
+
+    // Function to update the input field with the current value
+    function updateInputFieldProductDetails() {
+        inputField.value = currentValue;
+    }
+
+
+
+    var inputField = document.getElementById('valueInputCart');
+    var currentValue = 0;
+
+    function incrementCart(productId) {
+        var inputField = document.getElementById('valueInputCart' + productId);
+        var currentValue = parseInt(inputField.value, 10) || 0;
+        currentValue++;
+        inputField.value = currentValue;
+    }
+
+    // Function to decrement the value
+    function decrementCart(productId) {
+        var inputField = document.getElementById('valueInputCart' + productId);
+        var currentValue = parseInt(inputField.value, 10) || 0;
+        if (currentValue > 0) {
+            currentValue--;
+            inputField.value = currentValue;
+        }
+    }
+
+    // Function to update the input field with the current value
+    function updateInputFieldCart() {
+        inputField.value = currentValue;
+    }
+
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const allTabs = document.querySelectorAll(".tab-btn");
+        const tabContents = document.querySelectorAll(".tab-content");
+
+        allTabs.forEach((tab) => {
+            tab.addEventListener("click", function () {
+                // Remove 'active' class from all tabs and hide all tab contents
+                allTabs.forEach((t) => {
+                    t.classList.remove("active");
+                    t.classList.remove("border-black");
+                });
+                tabContents.forEach((tc) => tc.classList.add("hidden"));
+
+                // Add 'active' class to the clicked tab and show the corresponding content
+                tab.classList.add("active");
+                tab.classList.add("border-black");
+                const contentId = tab.id.replace("tab", "content");
+                document.getElementById(contentId).classList.remove("hidden");
+            });
+        });
+    });
+
+    function addToCart(productId) {
+        // Get the quantity from the input field
+        const quantity = document.getElementById('valueInput' + productId).value;
+        const quantityProductDetails = document.getElementById('valueInputProductDetails' + productId).value;
+
+        // Redirect to the cart view with product ID and quantity
+        window.location.href = `/cart/${productId}/?quantity=${quantityProductDetails}`;
+
+        window.location.href = `/cart/${productId}/?quantity=${quantity}`;
+    }
+    function addToCartProductDetails(productId) {
+        // Get the quantity from the input field
+        const quantityProductDetails = document.getElementById('valueInputProductDetails' + productId).value;
+
+        // Redirect to the cart view with product ID and quantity
+        window.location.href = `/cart/${productId}/?quantity=${quantityProductDetails}`;
+    }
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.js"></script>
+
+{% endblock %}

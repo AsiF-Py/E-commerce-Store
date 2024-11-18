@@ -1,0 +1,120 @@
+{% extends "base.html"%}
+{% load socialaccount %}
+{% block content %}
+<title>Register</title>
+
+<!--<style>-->
+<!--  body {-->
+<!--  margin: 0;-->
+<!--  padding: 0;-->
+<!--  font-family: 'Arial', sans-serif;-->
+<!--  background-color: #f4f4f4; /* Set a background color for the body */-->
+<!--}-->
+</style>
+ <button class="btn btn-outline-info">
+        <a href="{% provider_login_url 'google' %}">Login With Google</a>
+    </button>
+<!-- h-screen justify-center items-center -->
+<div class="flex flex-col mt-[3%] w-[50%] mx-auto space-y-5 bg-white rounded-lg">
+  <div class="flex mx-auto mt-5">
+    <button id="tab1" class="tab-btn active text-black border-black py-2 w-60 border-b-2">CREATE ACCOUNT</button>
+    <button id="tab2" class="tab-btn py-2 w-60 text-gray-500 border-b-2 border-[#D9D9D9]">LOG IN</button>
+  </div>
+  <div id="content1" class="tab-content active">
+    <form method="post">
+      {% csrf_token %}
+      <h1 class="text-center text-xl pb-5">CREATE ACCOUNT</h1>
+      <div class="w-2/3 mx-auto space-y-5">
+        <div>
+          {{register_form.first_name}}
+        </div>
+        <div>
+          {{register_form.last_name}}
+        </div>
+        <div>
+          {{register_form.email}}
+        </div>
+        <div>
+          {{register_form.password1}}
+        </div>
+        <div>
+          {{register_form.password2}}
+        </div>
+        <div class="">
+          <input type="submit" name="register_submit" class="btn btn-primary bg-black btn-block" value="Create Account">
+        </div>
+      </div>
+
+      {% if register_form.errors %}
+      <div class="alert alert-error">
+        <ul>
+          {% for field, errors in register_form.errors.items %}
+          <li class="list-disc list-inside">{{field}} {{ errors.0 }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+    </form>
+  </div>
+
+  <div id="content2" class="tab-content hidden ">
+    <form method="post">
+      {% csrf_token %}
+      <h1 class="text-center text-xl pb-5">LOGIN</h1>
+
+      <div class="w-2/3 mx-auto space-y-5">
+        <div>
+<!--          {{login_form}}-->
+          {{login_form.email}}
+        </div>
+        <div>
+          {{login_form.password}}
+        </div>
+        <div class="">
+          <input name="login_submit" type="submit" class="btn btn-primary bg-black btn-block" value="LOGIN">
+        </div>
+      </div>
+
+      {% if login_form.errors %}
+      <div class="alert alert-error">
+        <ul>
+          {% for field, errors in login_form.errors.items %}
+          <li class="list-disc list-inside">{{field}} {{ errors.0 }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+    </form>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const tabs = document.querySelectorAll(".tab-btn");
+    const tabContents = document.querySelectorAll(".tab-content");
+
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", function () {
+        // Remove 'active' class from all tabs and tab contents
+        tabs.forEach((t) => {
+          t.classList.remove("active")
+          t.classList.add("text-gray-500");
+          t.classList.add("border-[#D9D9D9]");
+          t.classList.remove("border-black")
+        });
+        tabContents.forEach((tc) => tc.classList.add("hidden"));
+        // tabs.forEach((tc) => tc.classList.add("text-xl bg-slate-500"));
+        // Add 'active' class to the clicked tab and show the corresponding content
+        tab.classList.remove("text-gray-500");
+        tab.classList.remove("border-black");
+        tab.classList.add("border-black");
+        tab.classList.add("active");
+        const contentId = tab.id.replace("tab", "content");
+        document.getElementById(contentId).classList.remove("hidden");
+      });
+    });
+  });
+</script>
+
+
+{% endblock %}

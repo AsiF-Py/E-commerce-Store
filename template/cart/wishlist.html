@@ -1,0 +1,131 @@
+{% extends "base.html"%}
+{% block content %}
+{% load cart_tags %}
+{% if wishlist %}
+
+<section class="p-12 grid grid-cols-4 gap-5">
+    {% for my_wishlist in wishlist %}
+
+
+    <div>
+        <div class="border border-1">
+            <!-- <a href="/add-wishlist/{{product.id}}/" ><h1 class="text-right pr-5 pt-3">ADD TO WISHLIST</h1></a> -->
+            <div class="flex justify-center">
+                <img src="{{my_wishlist.products.image.url}}" class="w-60 h-60 ">
+            </div>
+            <div class="flex justify-center items-center space-x-3 pt-3">
+
+
+
+                <div>
+                    <form class="max-w-xs mx-auto">
+                        <div class="relative flex items-center">
+                            <button type="button" onclick="decrement('{{ my_wishlist.id }}')"
+                                class="flex-shrink-0 bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 inline-flex items-center justify-center border border-gray-300 rounded-md h-5 w-5 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none">
+                                <svg class="w-2.5 h-2.5 text-gray-900 dark:text-white" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="2" d="M1 1h16" />
+                                </svg>
+                            </button>
+                            <input type="text" id="valueInput{{ my_wishlist.id }}"
+                                class="flex-shrink-0 text-gray-900 dark:text-white border-0 bg-transparent text-sm font-normal focus:outline-none focus:ring-0 max-w-[2.5rem] text-center"
+                                placeholder="" value="0" required>
+                            <button type="button" onclick="increment('{{ my_wishlist.id }}')"
+                                class="flex-shrink-0 bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 inline-flex items-center justify-center border border-gray-300 rounded-md h-5 w-5 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none">
+                                <svg class="w-2.5 h-2.5 text-gray-900 dark:text-white" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="2" d="M9 1v16M1 9h16" />
+                                </svg>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+
+
+
+                <div>
+                    {% if my_wishlist.products|in_cart:request.user %}
+                    <!-- <p>This product is already in your cart.</p> -->
+                    <a href="{% url 'my_cart' %}"><button type="button" data-modal-target="product-{{my_wishlist.id}}"
+                            data-modal-toggle="product-{{my_wishlist.id}}"
+                            class="text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none font-medium rounded-lg px-3 py-2 text-xs me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">Go
+                            To Cart</button></a>
+                    {% else %}
+                    <button onclick="addToCart('{{ my_wishlist.products.id }}')" type="button"
+                        class="text-white bg-gray-900  hover:bg-black focus:outline-none font-medium rounded-lg px-3 py-2 text-xs me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">Add
+                        To Cart</button>
+                    {% endif %}
+
+                </div>
+                <!-- <button data-modal-target="{{my_wishlist.id}}" data-modal-toggle="{{my_wishlist.id}}">
+                    <i class="fa-solid fa-eye" style="color: #000000;"></i>
+                </button> -->
+            </div>
+        </div>
+        <h1 class="text-[#090909] pt-2">{{my_wishlist.products.name | truncatechars:38}}</h1>
+        <h1 class="font-bold">₦{{my_wishlist.products.price}}</h1>
+
+        <div>
+        </div>
+
+
+    </div>
+
+    {% endfor %}
+
+</section>
+
+
+
+
+{% else %}
+<section class="flex flex-col h-screen justify-center items-center space-y-3">
+    <h1 class="text-lg font-bold">You have no item on your Wishlist</h1>
+    <p class="w-1/2 text-center">Your wishlist is your secret treasure trove of scented delights. You can save for a
+        special occasion or sharing gift ideas with loved ones, your wishlist is the perfect place to keep track of your
+        favourite scents.</p>
+    <button class="py-3 px-10 bg-black text-white rounded-full">Start Adding to Wishlist</button>
+</section>
+
+{% endif %}
+
+
+<script>
+    // Get the input field and initial value
+    var inputField = document.getElementById('valueInput');
+    var currentValue = 0;
+
+    function increment(productId) {
+        var inputField = document.getElementById('valueInput' + productId);
+        var currentValue = parseInt(inputField.value, 10) || 0;
+        currentValue++;
+        inputField.value = currentValue;
+    }
+
+    // Function to decrement the value
+    function decrement(productId) {
+        var inputField = document.getElementById('valueInput' + productId);
+        var currentValue = parseInt(inputField.value, 10) || 0;
+        if (currentValue > 0) {
+            currentValue--;
+            inputField.value = currentValue;
+        }
+    }
+
+    // Function to update the input field with the current value
+    function updateInputField() {
+        inputField.value = currentValue;
+    }
+
+    function addToCart(productId) {
+        // Get the quantity from the input field
+        const quantity = document.getElementById('valueInput' + productId).value;
+
+        // Redirect to the cart view with product ID and quantity
+        window.location.href = `/cart/${productId}/?quantity=${quantity}`;
+    }
+</script>
+{% endblock %}

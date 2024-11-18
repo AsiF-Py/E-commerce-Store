@@ -1,0 +1,232 @@
+{% extends "base.html"%}
+{% block content %}
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+
+<div id="default-carousel" class="relative h-[80%] w-full" data-carousel="slide">
+    <!-- Carousel wrapper -->
+    <div class="relative h-56 overflow-hidden rounded-lg md:h-[33rem]">
+        <!-- Item 1 -->
+        <div class="hidden duration-700 ease-in-out" data-carousel-item>
+            <img src="https://img.freepik.com/free-photo/front-view-expensive-perfume-as-present-dark-table_140725-148378.jpg?t=st=1701542211~exp=1701542811~hmac=b84162b0e88008d98603bc765a64414826733979eaeee4e52320be42a0992cf4"
+                class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
+        </div>
+        <!-- Item 2 -->
+        <div class="hidden duration-700 ease-in-out" data-carousel-item>
+            <img src="https://img.freepik.com/free-photo/front-view-perfume-bottle-flowers-light-background_140725-145496.jpg?t=st=1701542281~exp=1701542881~hmac=7812a71c02ccc93321b6bfa8ae49d0694014ce65ef5503fb2af831703c5c6f9f"
+                class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
+        </div>
+        <!-- Item 3 -->
+        <div class="hidden duration-700 ease-in-out" data-carousel-item>
+            <img src="https://img.freepik.com/free-photo/front-view-cologne-bottle-branch-rotten-wood-nude-background_140725-144915.jpg?w=740&t=st=1701542334~exp=1701542934~hmac=b519aad41dd18c9eb96f5197296e852a796db9fe74c803464af4121c36e64df9"
+                class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
+        </div>
+        <!-- Item 4 -->
+        <div class="hidden duration-700 ease-in-out" data-carousel-item>
+            <img src="https://img.freepik.com/free-photo/close-up-photo-fragrance-bottle-with-flowers_114579-51645.jpg?size=626&ext=jpg&ga=GA1.1.1120682363.1701542221&semt=ais"
+                class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
+        </div>
+        <!-- Item 5 -->
+        <div class="hidden duration-700 ease-in-out" data-carousel-item>
+            <img src="https://img.freepik.com/free-vector/elegant-glass-bottles-womens-perfumes-with_88138-188.jpg?size=626&ext=jpg&ga=GA1.1.1120682363.1701542221&semt=ais"
+                class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
+        </div>
+    </div>
+    <!-- Slider indicators -->
+    <div class="absolute z-30 flex -translate-x-1/2 bottom-5 left-1/2 space-x-3 rtl:space-x-reverse">
+        <button type="button" class="w-3 h-3 rounded-full" aria-current="true" aria-label="Slide 1"
+            data-carousel-slide-to="0"></button>
+        <button type="button" class="w-3 h-3 rounded-full" aria-current="false" aria-label="Slide 2"
+            data-carousel-slide-to="1"></button>
+        <button type="button" class="w-3 h-3 rounded-full" aria-current="false" aria-label="Slide 3"
+            data-carousel-slide-to="2"></button>
+        <button type="button" class="w-3 h-3 rounded-full" aria-current="false" aria-label="Slide 4"
+            data-carousel-slide-to="3"></button>
+        <button type="button" class="w-3 h-3 rounded-full" aria-current="false" aria-label="Slide 5"
+            data-carousel-slide-to="4"></button>
+    </div>
+    <!-- Slider controls -->
+    <button type="button"
+        class="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
+        data-carousel-prev>
+        <span
+            class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
+            <svg class="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180" aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M5 1 1 5l4 4" />
+            </svg>
+            <span class="sr-only">Previous</span>
+        </span>
+    </button>
+    <button type="button"
+        class="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
+        data-carousel-next>
+        <span
+            class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
+            <svg class="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180" aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="m1 9 4-4-4-4" />
+            </svg>
+            <span class="sr-only">Next</span>
+        </span>
+    </button>
+</div>
+
+<section>
+    <section class="p-12 grid grid-cols-1 md:grid-cols-3 gap-5">
+        {% for category in categorys %}
+        <div>
+            <div class="border border-1">
+                <div class="flex justify-center">
+                    <img src="{{category.image.url}}" class="w-full h-60">
+                </div>
+            </div>
+            <h1 class="text-[#090909] font-semibold pt-2">{{category.name}}</h1>
+            <a href="#" class="text-[#090909] pt-1">Shop Now</a>
+
+            <div>
+            </div>
+        </div>
+        {%endfor%}
+    </section>
+</section>
+
+
+<section class="bg-black text-center text-white py-5">
+    <div>
+        <p>
+            LUXURY SCENT 🚤 UNMATCHED ELEGEANCE 🌹 REFINED FRAGRANCES 🪷
+        </p>
+    </div>
+</section>
+
+<section class="p-12">
+    <div class="flex justify-between py-3">
+        <div>
+            <div class="container mx-auto mt-8">
+                <div class="flex mb-4">
+                    {% for category in categorys %}
+                    <button id="tab{{category.id}}" onclick="displayCategory('{{category.id}}')"
+                        class="tab-btn active text-black ml-3">{{category.name}}</button>
+
+                    {%endfor%}
+                </div>
+
+
+            </div>
+
+        </div>
+        <h1 class="font-semibold text-lg">BESTSELLERS</h1>
+        <a href="/product/">SHOP NOW</a>
+    </div>
+    <section id="category" class="grid grid-cols-1 md:grid-cols-4 gap-5">
+
+
+
+    </section>
+</section>
+
+<section class="text-center space-y-6 py-5 bg-black text-white">
+    <h1 class="text-xl">ESCENT STORE</h1>
+    <h1 class="text-3xl">Fragrance mastery at your fingertip</h1>
+    <p class="text-lg text-gray-600">Elevate your senses with personalised recommendations from our fragrance experts.
+    </p>
+    <div class=" flex justify-center">
+        <p class="py-4 px-8 border rounded-full">Talk to an Expert -></p>
+    </div>
+</section>
+
+<section class="text-center py-5 space-y-5">
+    <h1 class="text-base font-semibold">RECEIVE OUR NEWSLETTER</h1>
+    <p>Be the first to know about our new-ins, tips, special promo and other exclusive contents</p>
+    <div class="mb-6 flex justify-center">
+        <input type="text" id="default-input" placeholder="Email Address"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-1/2 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+    </div>
+</section>
+
+<section class="text-center py-12 bg-black">
+    <h1 class="text-7xl text-white">ESCENT STORE</h1>
+</section>
+
+<footer class="flex justify-between py-6 px-5">
+    <div class="text-xs">
+        <p>Copyright © 2023 Escent Store. All rights reserved</p>
+    </div>
+    <div class="flex justify-between gap-5 text-xs">
+        <p>Privacy Policy</p>
+        <p>Terms of Service</p>
+    </div>
+</footer>
+<script>
+    // $(document).ready(function () {
+        function displayCategory(categoryId) {
+            console.log(categoryId);
+            $.ajax({
+                type: "POST",
+                url: '/get-category/',
+                data: {
+                    'categoryId': categoryId,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function (data) {
+
+                    console.log(data);
+                    var productContainer = $('#category');
+
+                    productContainer.empty();
+                    for (const i of data.data) {
+                        var productHtml =
+                            `<div id="content${i.id}" class="tab-content active">
+                            <div class="border border-1">
+                                <div class="flex justify-center">
+                                    <img src="/media/${i.image}" class="w-full h-60">
+                                </div>
+                            </div>
+                        <h1 class="text-[#090909] font-medium pt-2">${i.name}</h1>
+                        <h1 class="font-bold">₦${i.price}</h1>
+
+                        <div>
+                        </div>
+                        </div>`
+                        productContainer.append(productHtml);
+                    }
+
+                },
+                error: function (xhr, errmsg, err) {
+                    console.log(xhr.status + ": " + xhr.responseText);
+                }
+
+
+            })
+        }
+        var defaultCategoryId = '{{ categorys.0.id }}';
+        displayCategory(defaultCategoryId);
+    // });
+    document.addEventListener("DOMContentLoaded", function () {
+        const tabs = document.querySelectorAll(".tab-btn");
+        const tabContents = document.querySelectorAll(".tab-content");
+
+        tabs.forEach((tab) => {
+            tab.addEventListener("click", function () {
+                // Remove 'active' class from all tabs and tab contents
+                tabs.forEach((t) => {
+                    t.classList.remove("active");
+                    t.classList.add("text-gray-500");
+                });
+                tabContents.forEach((tc) => tc.classList.add("hidden"));
+
+                // Add 'active' class to the clicked tab and show the corresponding content
+                tab.classList.remove("text-gray-500");
+                tab.classList.add("active");
+                const contentId = tab.id.replace("tab", "content");
+                document.getElementById(contentId).classList.remove("hidden");
+            });
+        });
+    });
+</script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+{% endblock %}
